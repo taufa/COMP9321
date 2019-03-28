@@ -24,7 +24,7 @@ class HeartDisease(db.Model):
     slope       = db.Column(db.Float) # slope: the slope of the peak exercise ST segment(1: upsloping, 2: flat, 3: downsloping)
     ca          = db.Column(db.Float) # number of major vessels (0-3) colored by flourosopy
     thal        = db.Column(db.Float) # 3 = normal; 6 = fixed defect; 7 = reversable defect
-    num         = db.Column(db.Float) # (the predicted attribute)
+    num         = db.Column(db.Float) # have heart disease(>=1 = yes; 0 = no)
 
     def __repr__(self):
         return self.id
