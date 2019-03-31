@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import normalize
 from sklearn.feature_selection import SelectKBest
@@ -6,10 +7,7 @@ from sklearn.feature_selection import chi2
 
 import numpy as np
 from matplotlib import pyplot as plt
-
-def load_data(filename):
-    return pd.read_csv(filename, float_precision='high')
-
+from project.models import load_data
 
 def clean_data(data):
     '''
@@ -19,6 +17,7 @@ def clean_data(data):
     :return: Dataframe containing the clean data (without NA)
     '''
     data.dropna(how='any', inplace=True)
+    data = data.apply(pd.to_numeric)    
     mapping_dict = {3: 0, 6: 1, 7: 2}  # this will convert the thal values to 0, 1 or 2
     data['thal'] = data['thal'].apply(lambda x: mapping_dict[x])
     return data
@@ -59,10 +58,8 @@ def feature_chi2():
     It assumes that the data is stored in a file called 'processed.cleveland.csv'
     :return: 'feature_importance' bar graph
     '''
-
-    filename = 'processed.cleveland.csv'
     n_features = 12
-    raw_data = load_data(filename)
+    raw_data = load_data()
     data = clean_data(raw_data)
 
     features = data.iloc[:, :-2]
@@ -84,6 +81,8 @@ def feature_chi2():
     plt.title('Feature Importance using Chi squared', fontsize=20)
     plt.yticks(pos, importance['features'])
     plt.ylabel('Features', fontsize=16)
-    plt.savefig('feature_importance.png', bbox_inches='tight')
-    plt.show()
+    #dir_path = os.path.dirname(os.path.realpath(__file__))
+    dir_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'static'))
+    plt.savefig('{}\\img\\feature_importance.png'.format(dir_path), bbox_inches='tight')
+    #plt.show()
     return
