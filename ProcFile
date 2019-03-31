@@ -1,2 +1,2 @@
 web: gunicorn project:app
-worker: flask run
+worker: python wsgi.py
