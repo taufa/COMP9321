@@ -11,7 +11,6 @@ db_uri = 'sqlite:///{}'.format(db_path)
 app.config.update(dict(
 	SQLALCHEMY_DATABASE_URI=db_uri,
 	SQLALCHEMY_TRACK_MODIFICATIONS=True,
-	TESTING=True,
 	))
 
 db = SQLAlchemy(app)
