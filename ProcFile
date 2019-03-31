@@ -1,1 +1,1 @@
-web: gunicorn project:app --workers 3 -t 60
+web: gunicorn project:app
