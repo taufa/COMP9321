@@ -1,1 +1,2 @@
 web: gunicorn project:app
+worker: flask run
