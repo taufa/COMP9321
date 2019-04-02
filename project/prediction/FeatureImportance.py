@@ -1,22 +1,23 @@
 import pandas as pd
+from project import db
+from project.models import HeartDisease
 import os
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import normalize
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
-import sqlite3
 import numpy as np
 from matplotlib import pyplot as plt
+from sqlalchemy.orm import sessionmaker
 
-
-def load_data(database):
-    conn = sqlite3.connect(database)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM heart_disease")
-    rows = cursor.fetchall()
-    column_names = list(map(lambda x: x[0], cursor.description))
-    data = pd.DataFrame(rows, columns=column_names)
-    conn.close()
+'''
+Load data from database and returns it as a dataframe
+'''
+def load_data():
+    Session = sessionmaker(bind=db.engine)
+    session = Session()
+    query = session.query(HeartDisease).all()
+    data = pd.read_sql(session.query(HeartDisease).statement, session.bind, index_col='id')
     return data
 
 def clean_data(data):
@@ -70,9 +71,8 @@ def feature_chi2():
     It assumes that the data is stored in a file called 'processed.cleveland.csv'
     :return: 'feature_importance' bar graph
     '''
-    filename = 'data.db'
     n_features = 12
-    raw_data = load_data(filename)
+    raw_data = load_data()
     data = clean_data(raw_data)
 
     features = data.iloc[:, :-2]

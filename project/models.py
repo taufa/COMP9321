@@ -27,21 +27,15 @@ class HeartDisease(db.Model):
     thal        = db.Column(db.Float, nullable=True) # 3 = normal; 6 = fixed defect; 7 = reversable defect
     num         = db.Column(db.Float, nullable=True) # have heart disease(>=1 = yes; 0 = no)
 
-    def __init__(self, age=None, sex=None, cp=None, rest_bp=None, chol=None, fbs=None, rest_ec=None, max_hr=None, exang=None, oldpeak=None, slope=None, ca=None, thal=None, num=None):
-        self.data = (age, sex, cp, rest_bp, chol, fbs, rest_ec, max_hr, exang, oldpeak, slope, ca, thal, num)
-
-    def __repr__(self):
-        return (self.age, self.sex, self.cp, self.rest_bp, self.chol, self.fbs, self.rest_ec, self.max_hr, self.exang, self.oldpeak, self.slope, self.ca, self.thal, self.num)
+    def __init__(**kwargs):
+        super(HeartDisease, self).__init__(**kwargs)
 
 '''
 Load the data file into sqlite db.
 :param db_file: directory of data file
-:return: dataframe with ? values as NaN
 '''
-def load_data(db_file='data/processed.cleveland.data'):
+def init_db(db_file='data/processed.cleveland.data'):
     data = pd.read_csv(db_file, header=None, float_precision='high')
     data.replace(['?'], [None], inplace=True)
     data.columns = ['age', 'sex', 'cp', 'rest_bp', 'chol', 'fbs', 'rest_ec', 'max_hr', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'num']
     data.to_sql(HeartDisease.__table__.name, con=db.engine, if_exists='replace', index=True, index_label='id')
-    data.replace(['?'], np.nan, inplace=True)
-    return data

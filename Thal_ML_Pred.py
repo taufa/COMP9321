@@ -47,7 +47,7 @@ def Init_and_Train(training_data_fullpath):
     X1 = X0.drop('target', axis=1)
 
     y = df1['thal']
-
+    print(X1)
     # Initialise all of the classifiers
     # I will fine-tune a lot of parameters of each classifier to reach better prediction results
     # in the next fews days. But you guys can still seamlessly work on using my functions.
@@ -175,16 +175,16 @@ def Predict_using_LDAnalysis(m_age, m_sex, m_chest_pain_type, m_resting_blood_pr
 
 
 # -- main() --
-#Init_and_Train(training_data_fullpath)
-#ret = Predict_using_SVC(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
-#print(ret)
-#ret = Predict_using_kNN(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
-#print(ret)
-#ret = Predict_using_DecisionTree(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
-#print(ret)
-#ret = Predict_using_LogisticRegression(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
-#print(ret)
-#ret = Predict_using_GausNB(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
-#print(ret)
-#ret = Predict_using_LDAnalysis(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
-#print(ret)
+Init_and_Train(training_data_fullpath)
+ret = Predict_using_SVC(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
+print(ret)
+ret = Predict_using_kNN(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
+print(ret)
+ret = Predict_using_DecisionTree(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
+print(ret)
+ret = Predict_using_LogisticRegression(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
+print(ret)
+ret = Predict_using_GausNB(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
+print(ret)
+ret = Predict_using_LDAnalysis(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
+print(ret)

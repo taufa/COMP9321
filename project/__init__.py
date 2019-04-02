@@ -16,10 +16,9 @@ app.config.update(dict(
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from .models import HeartDisease, load_data
+from .models import HeartDisease, init_db
 from .prediction.FeatureImportance import feature_chi2
-db.create_all()
-load_data()
+init_db()
 feature_chi2()
 
 from .views import *
