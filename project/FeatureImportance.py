@@ -3,12 +3,22 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import normalize
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
-
+import sqlite3
 import numpy as np
 from matplotlib import pyplot as plt
 
-def load_data(filename):
-    return pd.read_csv(filename, float_precision='high')
+def load_data(database):
+    conn = sqlite3.connect(database)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM heart_disease")
+    rows = cursor.fetchall()
+    column_names = list(map(lambda x: x[0], cursor.description))
+    data = pd.DataFrame(rows, columns=column_names)
+    conn.close()
+    return data
+
+# def load_data(filename):
+#     return pd.read_csv(filename, float_precision='high')
 
 
 def clean_data(data):
@@ -18,9 +28,12 @@ def clean_data(data):
     :param data: Dataframe containing the raw data
     :return: Dataframe containing the clean data (without NA)
     '''
+    data.replace('?', np.nan, inplace=True)
     data.dropna(how='any', inplace=True)
+    data.iloc[:, 12] = data.iloc[:, 12].astype(np.float64)   # converting the 'thal' column to float64 type
+    data.iloc[:, 11] = data.iloc[:, 11].astype(np.float64)  # converting the 'ca' column to float64 type
     mapping_dict = {3: 0, 6: 1, 7: 2}  # this will convert the thal values to 0, 1 or 2
-    data['thal'] = data['thal'].apply(lambda x: mapping_dict[x])
+    data.iloc[:, 12] = data.iloc[:, 12].apply(lambda x: mapping_dict[x])
     return data
 
 def standardise_data(data):
@@ -60,7 +73,7 @@ def feature_chi2():
     :return: 'feature_importance' bar graph
     '''
 
-    filename = 'processed.cleveland.csv'
+    filename = 'data.db'
     n_features = 12
     raw_data = load_data(filename)
     data = clean_data(raw_data)
