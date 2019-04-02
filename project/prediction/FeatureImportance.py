@@ -4,10 +4,20 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import normalize
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
-
+import sqlite3
 import numpy as np
 from matplotlib import pyplot as plt
-from project.models import load_data
+
+
+def load_data(database):
+    conn = sqlite3.connect(database)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM heart_disease")
+    rows = cursor.fetchall()
+    column_names = list(map(lambda x: x[0], cursor.description))
+    data = pd.DataFrame(rows, columns=column_names)
+    conn.close()
+    return data
 
 def clean_data(data):
     '''
@@ -16,10 +26,12 @@ def clean_data(data):
     :param data: Dataframe containing the raw data
     :return: Dataframe containing the clean data (without NA)
     '''
+    data.replace('?', np.nan, inplace=True)
     data.dropna(how='any', inplace=True)
-    data = data.apply(pd.to_numeric)    
+    data.iloc[:, 12] = data.iloc[:, 12].astype(np.float64)   # converting the 'thal' column to float64 type
+    data.iloc[:, 11] = data.iloc[:, 11].astype(np.float64)  # converting the 'ca' column to float64 type
     mapping_dict = {3: 0, 6: 1, 7: 2}  # this will convert the thal values to 0, 1 or 2
-    data['thal'] = data['thal'].apply(lambda x: mapping_dict[x])
+    data.iloc[:, 12] = data.iloc[:, 12].apply(lambda x: mapping_dict[x])
     return data
 
 def standardise_data(data):
@@ -32,7 +44,7 @@ def standardise_data(data):
     data = data.astype(np.float64)  # converting the entire dataframe to float64 data type
     scaler = StandardScaler()
     feature_names = data.columns[:-2]
-    target = data['thal']
+    target = data.iloc[:, 12]
     features = data.iloc[:,:-2]   # the features are the rest of the columns
     features_scaled = scaler.fit_transform(features)
     features_scaled = pd.DataFrame(features_scaled, columns=feature_names)
@@ -58,8 +70,9 @@ def feature_chi2():
     It assumes that the data is stored in a file called 'processed.cleveland.csv'
     :return: 'feature_importance' bar graph
     '''
+    filename = 'data.db'
     n_features = 12
-    raw_data = load_data()
+    raw_data = load_data(filename)
     data = clean_data(raw_data)
 
     features = data.iloc[:, :-2]
