@@ -7,6 +7,7 @@ from sklearn.feature_selection import chi2
 import sqlite3
 import numpy as np
 from matplotlib import pyplot as plt
+import os
 
 
 def load_data(database):
@@ -16,6 +17,7 @@ def load_data(database):
     rows = cursor.fetchall()
     column_names = list(map(lambda x: x[0], cursor.description))
     data = pd.DataFrame(rows, columns=column_names)
+    data = data.iloc[:,1:]  # ignore the id column from the database
     conn.close()
     return data
 
@@ -70,7 +72,7 @@ def feature_chi2():
     It assumes that the data is stored in a file called 'processed.cleveland.csv'
     :return: 'feature_importance' bar graph
     '''
-    filename = 'data.db'
+    filename = os.path.join(os.path.dirname(__file__), '..', 'data.db')
     n_features = 12
     raw_data = load_data(filename)
     data = clean_data(raw_data)
