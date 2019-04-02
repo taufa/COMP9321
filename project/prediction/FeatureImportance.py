@@ -8,6 +8,7 @@ from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 import numpy as np
 from matplotlib import pyplot as plt
+<<<<<<< HEAD
 from sqlalchemy.orm import sessionmaker
 
 '''
@@ -18,6 +19,20 @@ def load_data():
     session = Session()
     query = session.query(HeartDisease).all()
     data = pd.read_sql(session.query(HeartDisease).statement, session.bind, index_col='id')
+=======
+import os
+
+
+def load_data(database):
+    conn = sqlite3.connect(database)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM heart_disease")
+    rows = cursor.fetchall()
+    column_names = list(map(lambda x: x[0], cursor.description))
+    data = pd.DataFrame(rows, columns=column_names)
+    data = data.iloc[:,1:]  # ignore the id column from the database
+    conn.close()
+>>>>>>> 8aae481f6ecbb0e5c4b93e919ae1c485313ebfa7
     return data
 
 def clean_data(data):
@@ -71,6 +86,10 @@ def feature_chi2():
     It assumes that the data is stored in a file called 'processed.cleveland.csv'
     :return: 'feature_importance' bar graph
     '''
+<<<<<<< HEAD
+=======
+    filename = os.path.join(os.path.dirname(__file__), '..', 'data.db')
+>>>>>>> 8aae481f6ecbb0e5c4b93e919ae1c485313ebfa7
     n_features = 12
     raw_data = load_data()
     data = clean_data(raw_data)
