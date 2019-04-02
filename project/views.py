@@ -3,9 +3,10 @@ from project import app
 
 @app.route('/')
 def home():
-	return "<h1>COMP9321</h1>"
 
-@app.route('/display/')
+	return render_template('home.html')
+
+@app.route('/visual/')
 def display():
     return "<h1>Visualization</h1>"
 

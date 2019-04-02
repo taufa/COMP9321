@@ -17,7 +17,9 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from .models import HeartDisease, load_data
+from .prediction.FeatureImportance import feature_chi2
 db.create_all()
-load_data('data/processed.cleveland.data')
+load_data()
+feature_chi2()
 
 from .views import *

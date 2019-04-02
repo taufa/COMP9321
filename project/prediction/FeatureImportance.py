@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import normalize
 from sklearn.feature_selection import SelectKBest
@@ -6,6 +7,7 @@ from sklearn.feature_selection import chi2
 import sqlite3
 import numpy as np
 from matplotlib import pyplot as plt
+
 
 def load_data(database):
     conn = sqlite3.connect(database)
@@ -16,10 +18,6 @@ def load_data(database):
     data = pd.DataFrame(rows, columns=column_names)
     conn.close()
     return data
-
-# def load_data(filename):
-#     return pd.read_csv(filename, float_precision='high')
-
 
 def clean_data(data):
     '''
@@ -46,7 +44,7 @@ def standardise_data(data):
     data = data.astype(np.float64)  # converting the entire dataframe to float64 data type
     scaler = StandardScaler()
     feature_names = data.columns[:-2]
-    target = data['thal']
+    target = data.iloc[:, 12]
     features = data.iloc[:,:-2]   # the features are the rest of the columns
     features_scaled = scaler.fit_transform(features)
     features_scaled = pd.DataFrame(features_scaled, columns=feature_names)
@@ -72,7 +70,6 @@ def feature_chi2():
     It assumes that the data is stored in a file called 'processed.cleveland.csv'
     :return: 'feature_importance' bar graph
     '''
-
     filename = 'data.db'
     n_features = 12
     raw_data = load_data(filename)
@@ -97,6 +94,8 @@ def feature_chi2():
     plt.title('Feature Importance using Chi squared', fontsize=20)
     plt.yticks(pos, importance['features'])
     plt.ylabel('Features', fontsize=16)
-    plt.savefig('feature_importance.png', bbox_inches='tight')
-    plt.show()
+    #dir_path = os.path.dirname(os.path.realpath(__file__))
+    dir_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'static'))
+    plt.savefig('{}\\img\\feature_importance.png'.format(dir_path), bbox_inches='tight')
+    #plt.show()
     return
