@@ -6,8 +6,8 @@ A web application on ML algorithms using heart disease [data-set](https://archiv
 ### Installing
 Create a directory for your project
 ```
-$ mkdir project
-$ cd project
+$ mkdir <folder_name>
+$ cd <folder_name>
 ```
 Type ```git clone``` to grab a complete copy of the repository
 ```
