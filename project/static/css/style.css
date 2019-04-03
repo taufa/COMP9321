@@ -223,7 +223,7 @@ h6 {
 }
 
 #intro .intro-info .btn-get-started,
-#intro .intro-info .btn-services {
+#intro .intro-info .btn-predict {
   font-family: "Montserrat", sans-serif;
   font-size: 13px;
   font-weight: 600;
@@ -239,7 +239,7 @@ h6 {
 }
 
 #intro .intro-info .btn-get-started:hover,
-#intro .intro-info .btn-services:hover {
+#intro .intro-info .btn-predict:hover {
   background: #0a98c0;
 }
 
@@ -567,6 +567,118 @@ h6 {
   content: '';
   background-color: #ebf1fa;
   transition: .5s;
+}
+
+/* Predict Section
+--------------------------------*/
+
+#predict {
+  padding: 60px 0 40px 0;
+}
+
+#predict .box {
+  padding: 30px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  margin: 0 10px 40px 10px;
+  background: #fff;
+  box-shadow: 0 10px 29px 0 rgba(68, 88, 144, 0.1);
+  transition: all 0.3s ease-in-out;
+  text-align: center;
+}
+
+#predict .box:hover {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+#predict .icon {
+  margin: 0 auto 15px auto;
+  padding-top: 12px;
+  display: inline-block;
+  text-align: center;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+}
+
+#predict .icon i {
+  font-size: 36px;
+  line-height: 1;
+}
+
+#predict .title {
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+#predict .title a {
+  color: #111;
+}
+
+#predict .box:hover .title a {
+  color: #1bb1dc;
+}
+
+#predict .description {
+  font-size: 14px;
+  line-height: 28px;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+/* Visual Section
+--------------------------------*/
+
+#visual {
+  padding: 60px 0;
+}
+
+#visual .visual-content .features {
+  margin: 0 0 15px 0;
+  padding: 0;
+  transition: 0.3s ease-in-out;
+}
+
+#visual .visual-content .features i {
+  font-size: 36px;
+  float: left;
+}
+
+#visual .visual-content .features h4 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-left: 56px;
+  color: #413e66;
+  margin-bottom: 5px;
+}
+
+#visual .visual-content .features p {
+  font-size: 16px;
+  margin-left: 56px;
+  color: #555186;
+}
+
+#visual .counters {
+  padding-top: 40px;
+}
+
+#visual .counters span {
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
+  font-size: 48px;
+  display: block;
+  color: #555186;
+}
+
+#visual .counters p {
+  padding: 0;
+  margin: 0 0 20px 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: #8a87b6;
 }
 
 /* Team Section
