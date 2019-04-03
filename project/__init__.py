@@ -18,7 +18,9 @@ migrate = Migrate(app, db)
 
 from .models import HeartDisease, init_db
 from .prediction.FeatureImportance import feature_chi2
+from .visualization.views import display
 init_db()
 feature_chi2()
+#display()
 
 from .views import *
