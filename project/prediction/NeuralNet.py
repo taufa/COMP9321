@@ -240,4 +240,35 @@ def train_neural_net():
     torch.save({'model': myNet, 'mu': mu, 'sigma': sigma}, filename)
     return
 
-def predict_thal()
+def predict_thal_nn(m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m_serum_cholesterol,
+                      m_fasting_blood_sugar, m_resting_electrocardiographic_results, m_maximum_heart_rate_achieved,
+                      m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
+                      m_number_of_major_vessels):
+    ''' Function that predicts a 'thal' value using the trained neural net stored in trained_net.tar'''
+    X = [m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m_serum_cholesterol,
+                      m_fasting_blood_sugar, m_resting_electrocardiographic_results, m_maximum_heart_rate_achieved,
+                      m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
+                      m_number_of_major_vessels]
+
+    filename = os.path.join(os.path.dirname(__file__), 'trained_net.tar')
+
+    # Loading the model from file
+    model = torch.load(filename)
+    myNet = model['model']
+    myNet.eval()
+    mu = model['mu']
+    sigma = model['sigma']
+
+    # Standardisation of inputs using the means and std devs stored in the model
+    for i in range(len(X)):
+        X[i] = (X[i] - mu[i])/sigma[i]
+    X = torch.from_numpy(np.array([X]))
+    X = Variable(X).float()
+
+    # Run the model on the inputs
+    y_predicted = myNet(X)
+    prediction = torch.max(y_predicted.data, dim=1)[1]  # classes with highest probability
+    return prediction.item()
+# 63,1,1,145,233,1,2,150,0,2.3,3,0
+# 60,1,4,130,206,0,2,132,1,2.4,2,2
+# 58,0,3,120,340,0,0,172,0,0,1,0
