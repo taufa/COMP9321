@@ -10,14 +10,16 @@ import numpy as np
 from matplotlib import pyplot as plt
 from sqlalchemy.orm import sessionmaker
 
-'''
-Load data from database and returns it as a dataframe
-'''
+
 def load_data():
+    '''
+    Load data from database and returns it as a dataframe
+    '''
     Session = sessionmaker(bind=db.engine)
     session = Session()
     query = session.query(HeartDisease).all()
     data = pd.read_sql(session.query(HeartDisease).statement, session.bind, index_col='id')
+    session.close()
     return data
 
 def clean_data(data):
