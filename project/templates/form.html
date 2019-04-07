@@ -1,0 +1,76 @@
+<form action="/" method="POST" role="form" class="form">
+  {{ form.csrf_token }}
+  <div class="form-group row">
+    {{ form.age.label(class="col-sm-6 col-form-label") }}
+    <div class="col-sm-6">
+    {{ form.age(placeholder="age in years", class="form-control") }}
+    </div>
+  </div>
+  <div class="form-group row">
+    {{ form.sex.label(class="col-sm-6 col-form-label") }}
+    <div class="col-sm-6">
+    {{ form.sex(class="form-control") }}
+    </div>
+  </div>
+  <div class="form-group row">
+    {{ form.cp.label(class="col-sm-6 col-form-label") }}
+    <div class="col-sm-6">
+    {{ form.cp(class="form-control") }}
+    </div>
+  </div>
+  <div class="form-group row">
+    {{ form.restbps.label(class="col-sm-6 col-form-label") }}
+    <div class="col-sm-6">
+    {{ form.restbps(placeholder="in mm Hg", class="form-control") }}
+    </div>
+  </div>
+  <div class="form-group row">
+    {{ form.chol.label(class="col-sm-6 col-form-label") }}
+    <div class="col-sm-6">
+    {{ form.chol(placeholder="in mg/dl", class="form-control") }}
+    </div>
+  </div>
+  <div class="form-group row">
+    {{ form.fbs.label(class="col-sm-6 col-form-label") }}
+    <div class="col-sm-6">
+    {{ form.fbs(class="form-control") }}
+    </div>
+  </div>
+  <div class="form-group row">
+    {{ form.restecg.label(class="col-sm-6 col-form-label") }}
+    <div class="col-sm-6">
+    {{ form.restecg(class="form-control") }}
+    </div>
+  </div>
+  <div class="form-group row">
+    {{ form.maxhr.label(class="col-sm-6 col-form-label") }}
+    <div class="col-sm-6">
+    {{ form.maxhr(placeholder="maximum heart rate achieved", class="form-control") }}
+    </div>
+  </div>
+  <div class="form-group row">
+    {{ form.exang.label(class="col-sm-6 col-form-label") }}
+    <div class="col-sm-6">
+    {{ form.exang(class="form-control") }}
+    </div>
+  </div>
+  <div class="form-group row">
+    {{ form.oldpeak.label(class="col-sm-6 col-form-label") }}
+    <div class="col-sm-6">
+    {{ form.oldpeak(placeholder="induced by exercise relative to rest", class="form-control") }}
+    </div>
+  </div>
+  <div class="form-group row">
+    {{ form.slope.label(class="col-sm-6 col-form-label") }}
+    <div class="col-sm-6">
+    {{ form.slope(class="form-control") }}
+    </div>
+  </div>
+  <div class="form-group row">
+    {{ form.ca.label(class="col-sm-6 col-form-label") }}
+    <div class="col-sm-6">
+    {{ form.ca(class="form-control") }}
+    </div>
+  </div>
+  {{ form.submit(class_="btn btn-success btn-block")}} 
+</form>

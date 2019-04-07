@@ -1,9 +1,18 @@
-from flask import render_template, request, redirect, url_for
+from flask import flash, render_template, request, redirect, url_for, jsonify
 from project import app
+from .forms import PredictionForm
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
-	return render_template('home.html')
+	form = PredictionForm()
+   
+	if request.method == 'POST':
+		if not form.validate_on_submit():
+			flash('Some fields are required.')
+		else:
+			data = request.form['input_name']
+			return render_template('home.html', form=form)
+	return render_template('home.html', form=form)
 
 @app.route('/visual/')
 def display():
