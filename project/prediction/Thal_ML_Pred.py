@@ -47,7 +47,7 @@ def Init_and_Train(training_data_fullpath):
     # I will fine-tune a lot of parameters of each classifier to reach better prediction results
     # in the next fews days. But you guys can still seamlessly work on using my functions.
     global Classifier_SVC, Classifier_kNN, Classifier_DecisionTree, Classifier_LogisticRegression, Classifier_GausNB, Classifier_LDAnalysis
-    Classifier_SVC = SVC(kernel='rbf', degree=3, gamma='auto')
+    Classifier_SVC = SVC(kernel='rbf', degree=5, gamma='auto')
     Classifier_kNN = KNeighborsClassifier()
     Classifier_DecisionTree = DecisionTreeClassifier()
     Classifier_LogisticRegression = LogisticRegression()
