@@ -35,7 +35,7 @@ class NeuralNet_2H(nn.Module):
 
     def forward(self, x):
         x = torch.tanh(self.fc1(x))          # Using hyperbolic tangent as activation function
-        x = torch.tanh(self.fc2(x))
+        x = F.leaky_relu(self.fc2(x), negative_slope=0.2)   # leaky relu activation function
         output = F.log_softmax(self.fc3(x), dim=1)
         return output
 
@@ -50,8 +50,8 @@ class NeuralNet_3H(nn.Module):
 
     def forward(self, x):
         x = torch.tanh(self.fc1(x))          # Using hyperbolic tangent as activation function
-        x = torch.tanh(self.fc2(x))
-        x = torch.tanh(self.fc3(x))
+        x = F.leaky_relu(self.fc2(x), negative_slope=0.2)
+        x = torch.sigmoid(self.fc3(x))
         output = F.log_softmax(self.fc4(x), dim=1)
         return output
 
@@ -67,7 +67,7 @@ class NeuralNet_4H(nn.Module):
 
     def forward(self, x):
         x = torch.tanh(self.fc1(x))          # Using hyperbolic tangent as activation function
-        x = F.relu(self.fc2(x))
+        x = F.leaky_relu(self.fc2(x), negative_slope=0.2)
         x = torch.sigmoid(self.fc3(x))
         x = torch.tanh(self.fc4(x))
         output = F.log_softmax(self.fc5(x), dim=1)
@@ -87,9 +87,9 @@ class NeuralNet_5H(nn.Module):
     def forward(self, x):
         x = torch.tanh(self.fc1(x))          # Using hyperbolic tangent as activation function
         x = torch.sigmoid(self.fc2(x))
-        x = F.relu(self.fc3(x))
+        x = F.leaky_relu(self.fc3(x), negative_slope=0.2)
         x = torch.tanh(self.fc4(x))
-        x = F.relu(self.fc5(x))
+        x = F.leaky_relu(self.fc5(x), negative_slope=0.2)
         output = F.log_softmax(self.fc6(x), dim=1)
         return output
 
@@ -118,7 +118,7 @@ def clean_data(data):
     mapping_dict = {3: 0, 6: 1, 7: 2}  # this will convert the thal values to 0, 1 or 2
     data.iloc[:, 12] = data.iloc[:, 12].apply(lambda x: mapping_dict[x])
     # Dropping the 2 least important features
-    data.drop(['fbs', 'restecg'], axis=1, inplace=True)
+    # data.drop(['fbs', 'restecg'], axis=1, inplace=True)
     return data
 
 def standardise_data(data):
@@ -133,7 +133,7 @@ def standardise_data(data):
     data = data.astype(np.float64)  # converting the entire dataframe to float64 data type
     scaler = StandardScaler()
     feature_names = data.columns[:-2]
-    target = data.iloc[:, 10]
+    target = data.iloc[:, 12]
     # target = data.iloc[:, 12]
     features = data.iloc[:,:-2]   # the features are the rest of the columns
     mu = features.mean()
@@ -142,17 +142,18 @@ def standardise_data(data):
     features_scaled = pd.DataFrame(features_scaled, columns=feature_names)
     return features_scaled, target, mu, sigma
 
-def train_neural_net(n_hidden_layers, n_hidden_nodes, epochs, batch_size, learning_rate, weight_decay, train_acc, valid_acc):
+def train_neural_net(X, y, n_hidden_layers, n_hidden_nodes, max_epochs, batch_size, learning_rate,
+                     weight_decay, train_acc, valid_acc):
     '''
     Trains a neural net and saves it to a file
 
     '''
-    raw_data = load_data()
-    data = clean_data(raw_data)
+    # raw_data = load_data()
+    # data = clean_data(raw_data)
 
     # Applying z-normalisation
-    X, y, mu, sigma = standardise_data(data)
-    data = pd.concat([X, y], axis=1)  # All the columns are stardardised with the exception of the target column (y)
+    # X, y, mu, sigma = standardise_data(data)
+    # data = pd.concat([X, y], axis=1)  # All the columns are stardardised with the exception of the target column (y)
 
     # Converting the data to a tensor
     # tensor_data = torch.from_numpy(np.array(data))
@@ -180,7 +181,7 @@ def train_neural_net(n_hidden_layers, n_hidden_nodes, epochs, batch_size, learni
     test_loader = DataLoader(train_set, batch_size=batch_size, shuffle=False)
 
     # Creating the neural net
-    input_nodes = 10  # Number of features
+    input_nodes = 12  # Number of features
     hidden_nodes = n_hidden_nodes # Number of nodes of the hidden layer(s)
     output_nodes = 3  # Number of output classes
 
@@ -203,14 +204,14 @@ def train_neural_net(n_hidden_layers, n_hidden_nodes, epochs, batch_size, learni
     loss_criterion = nn.CrossEntropyLoss()
 
     # Training the neural net
-    n_epochs = epochs  # number of iterations over the entire dataset
+    n_epochs = max_epochs  # number of iterations over the entire training dataset
     step = 0
     iteration_list = list()
     valid_accuracy_list = list()
     train_accuracy_list = list()
     train_loss_list = list()
     valid_loss_list = list()
-    log_interval = 50 # how often we report accuracy and loss
+    log_interval = round(n_train/(10*batch_size)) # how often we report accuracy and loss
     train_accuracy = 0
     for epoch in range(n_epochs):
         correct_labels_train = 0
@@ -258,63 +259,36 @@ def train_neural_net(n_hidden_layers, n_hidden_nodes, epochs, batch_size, learni
                     # correct_labels += (predictions.long() == y_valid.long()).sum()
 
                 # Calculating Accuracy and storing loss and accuracy for plotting purposes
-                accuracy = (correct_labels/total_labels)*100
-                valid_accuracy_list.append(accuracy)
+                valid_accuracy = (correct_labels/total_labels)*100
+                valid_accuracy_list.append(valid_accuracy)
                 train_accuracy_list.append(train_accuracy)
                 iteration_list.append(step)
                 train_loss_list.append(loss.item())   # List of train loss data
                 valid_loss_list.append(loss_valid.item())  # List of validation loss data
-                print('Epoch: {:d} \t Train Loss: {:.6f} \t Train Acc: {:.6f} \t Valid Loss: {:.6f} \t Validation Acc: {:.6f}'.\
-                      format(epoch, loss.item(), train_accuracy, loss_valid.item(), accuracy))
+                # print('Epoch: {:d} \t Train Loss: {:.6f} \t Train Acc: {:.6f} \t Valid Loss: {:.6f} \t Validation Acc: {:.6f}'.\
+                #       format(epoch, loss.item(), train_accuracy, loss_valid.item(), valid_accuracy))
         train_accuracy = (correct_labels_train / total_labels_train) * 100  # Accuracy is calculated after every epoch
-        if ((train_accuracy > train_acc * 100) and (accuracy > valid_acc * 100)) or (train_accuracy >= 95):
-            print('Stopping training early')
+        if ((train_accuracy > train_acc * 100) and (valid_accuracy > valid_acc * 100)) or (train_accuracy >= 95):
+            # print('Stopping training early')
             break
+    return myNet, iteration_list, train_accuracy_list, valid_accuracy_list, train_loss_list, valid_loss_list, train_accuracy, \
+           valid_accuracy, epoch
 
-
-    # Plotting results
-    fig = plt.figure(figsize=(14, 6))
-    ax1 = fig.add_subplot(121)
-    plt.plot(iteration_list, train_accuracy_list, color='red')
-    plt.plot(iteration_list, valid_accuracy_list, color = 'blue')
-    plt.legend(('Training', 'Validation'), loc='lower right')
-    plt.xlabel('Number of Iterations')
-    plt.ylabel('Accuracy')
-    plt.title('Training and Validation Accuracy vs Number of Iterations')
-    plt.ylim(0, 100)
-    plt.xlim(left=0)
-
-    ax2 = fig.add_subplot(122)
-    plt.plot(iteration_list, train_loss_list, color = 'red')
-    plt.plot(iteration_list, valid_loss_list, color = 'blue')
-    plt.legend(('Training', 'Validation'), loc='upper left')
-    plt.xlabel('Number of Iterations')
-    plt.ylabel('Loss')
-    plt.title('Training and Validation Loss vs Number of Iterations')
-    plt.xlim(left=0)
-    plt.ylim(bottom=0)
-    plt.savefig('Loss.png')
-    plt.show()
-
-    # Saving Neural net
-    filename = os.path.join(os.path.dirname(__file__), 'trained_net.tar')
-    torch.save({'model': myNet, 'mu': mu, 'sigma': sigma}, filename)
-    return
 
 def predict_thal_nn(m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m_serum_cholesterol,
                       m_fasting_blood_sugar, m_resting_electrocardiographic_results, m_maximum_heart_rate_achieved,
                       m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
                       m_number_of_major_vessels):
     ''' Function that predicts a 'thal' value using the trained neural net stored in trained_net.tar'''
-    # X = [m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m_serum_cholesterol,
-    #                   m_fasting_blood_sugar, m_resting_electrocardiographic_results, m_maximum_heart_rate_achieved,
-    #                   m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
-    #                   m_number_of_major_vessels]
     X = [m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m_serum_cholesterol,
-                      m_maximum_heart_rate_achieved, m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
+                      m_fasting_blood_sugar, m_resting_electrocardiographic_results, m_maximum_heart_rate_achieved,
+                      m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
                       m_number_of_major_vessels]
+    # X = [m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m_serum_cholesterol,
+    #                   m_maximum_heart_rate_achieved, m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
+    #                   m_number_of_major_vessels]
 
-    filename = os.path.join(os.path.dirname(__file__), 'trained_net.tar')
+    filename = os.path.join(os.path.dirname(__file__), 'trained_net_77.tar')
 
     # Loading the model from file
     model = torch.load(filename)
@@ -337,7 +311,79 @@ def predict_thal_nn(m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m
 # 60,1,4,130,206,0,2,132,1,2.4,2,2
 # 58,0,3,120,340,0,0,172,0,0,1,0
 
-def find_neural_net()
+def find_best_neural_net(starting_model_number, number_of_hidden_layers):
     ''' This function trains many different neural nets with different configurations with many different parameters
     and stores the models with the best accuracy'''
+    raw_data = load_data()
+    data = clean_data(raw_data)
+    X, y, mu, sigma = standardise_data(data)
 
+    # Creating the records dataframe that will store the parameters used for successful models
+    records = pd.DataFrame(columns=['model', 'hidden_layers', 'hidden_nodes', 'epochs', 'batch_size', 'learning_rate',
+                                    'weight_decay', 'train_acc', 'valid_acc'])
+
+    # records = pd.read_csv(f'records_{number_of_hidden_layers}.csv')
+    n_hidden_nodes = [6, 12, 24, 36]   # number of hidden nodes that will be tested
+    max_epochs = 1500
+    batch_sizes = [4, 8, 16, 32]
+    learning_rates = [0.0002, 0.0004, 0.0008, 0.001, 0.002, 0.004, 0.008, 0.01, 0.02,
+                      0.04, 0.08, 0.1]
+    weight_decays = [0, 1e-6, 1e-5, 2e-5]
+    model_number = starting_model_number
+    # The model will automatically stop training once it reaches train_acc and valid_acc
+    train_acc = 0.90
+    valid_acc = 0.75
+
+    for hl in [number_of_hidden_layers]:   # number of hidden layers range(1,5)
+        for hn in n_hidden_nodes:  # number of hidden nodes
+            for bs in batch_sizes:
+                for lr in learning_rates:
+                    for wd in weight_decays:
+                        for i in range(5):
+                            model_number += 1
+                            print(f'Hidden layers: {hl}\t Hidden nodes: {hn}\t Batch size: {bs}\t Learning Rate: {lr}\t Weight Decay: {wd}\t Attempt {i}')
+                            model, iteration_list, train_accuracy_list, valid_accuracy_list, train_loss_list, valid_loss_list, \
+                            train_accuracy, valid_accuracy, epoch = train_neural_net(X, y, hl, hn, max_epochs, bs, lr,
+                                                                                     wd, train_acc, valid_acc)
+                            if valid_accuracy >= 75:
+                                print('Model found')
+                                records = records.append(
+                                    {'model': model_number, 'hidden_layers': hl, 'hidden_nodes': hn, 'epochs': epoch,
+                                     'batch_size': bs, 'learning_rate': lr, 'weight_decay': wd, 'train_acc': train_accuracy,
+                                     'valid_acc': valid_accuracy},
+                                    ignore_index=True)
+                                # Save the records to file
+                                records.to_csv(f'records_{number_of_hidden_layers}.csv', index=False, encoding='utf-8')
+
+                                # Plotting results
+                                fig = plt.figure(figsize=(14, 6))
+                                ax1 = fig.add_subplot(121)
+                                plt.plot(iteration_list, train_accuracy_list, color='red')
+                                plt.plot(iteration_list, valid_accuracy_list, color='blue')
+                                plt.legend(('Training', 'Validation'), loc='lower right')
+                                plt.xlabel('Number of Iterations')
+                                plt.ylabel('Accuracy')
+                                plt.title('Training and Validation Accuracy vs Number of Iterations')
+                                plt.ylim(0, 100)
+                                plt.xlim(left=0)
+
+                                ax2 = fig.add_subplot(122)
+                                plt.plot(iteration_list, train_loss_list, color='red')
+                                plt.plot(iteration_list, valid_loss_list, color='blue')
+                                plt.legend(('Training', 'Validation'), loc='upper left')
+                                plt.xlabel('Number of Iterations')
+                                plt.ylabel('Loss')
+                                plt.title('Training and Validation Loss vs Number of Iterations')
+                                plt.xlim(left=0)
+                                plt.ylim(bottom=0)
+                                plt.suptitle(f'Hidden Layers: {hl}, Hidden Nodes:{hn}, Batch Size: {bs}, Learning Rate: {lr}, Weight Decay: {wd}')
+
+                                # Save figure and model if the validation accuracy is greater than 75%
+                                plt.savefig(f'Plot_{model_number}.png')
+                                plt.close(fig)
+                                # plt.show()
+
+                                # Saving Neural net
+                                filename = os.path.join(os.path.dirname(__file__), f'trained_net_{model_number}.tar')
+                                torch.save({'model': model, 'mu': mu, 'sigma': sigma}, filename)
+    return
