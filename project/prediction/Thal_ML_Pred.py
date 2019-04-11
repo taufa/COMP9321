@@ -54,7 +54,7 @@ def Init_and_Train(training_data_fullpath):
     Classifier_DecisionTree = DecisionTreeClassifier()
     
     # LogisticRegression, GaussianNB and LinearDiscriminantAnalysis are hard to be improved by only fine-tuning the initial parameters. Thus these 3 models are not prefered.
-    Classifier_LogisticRegression = LogisticRegression()
+    Classifier_LogisticRegression = LogisticRegression(solver='saga',multi_class='multinomial',max_iter=10000)
     Classifier_GausNB = GaussianNB()
     Classifier_LDAnalysis = LinearDiscriminantAnalysis()
 
