@@ -47,10 +47,14 @@ def Init_and_Train(training_data_fullpath):
     # I will fine-tune a lot of parameters of each classifier to reach better prediction results
     # in the next fews days. But you guys can still seamlessly work on using my functions.
     global Classifier_SVC, Classifier_kNN, Classifier_DecisionTree, Classifier_LogisticRegression, Classifier_GausNB, Classifier_LDAnalysis
-    Classifier_SVC = SVC(kernel='rbf', degree=3, gamma='auto')
-    Classifier_kNN = KNeighborsClassifier()
+    Classifier_SVC = SVC(kernel='rbf', degree=5, gamma='auto')
+    Classifier_kNN = KNeighborsClassifier(n_neighbors=7, weights='distance')
+    # Modified the parameters of KNeighborsClassifier to acheive a much better prediction results of health data.
+    #Classifier_kNN = KNeighborsClassifier()
     Classifier_DecisionTree = DecisionTreeClassifier()
-    Classifier_LogisticRegression = LogisticRegression()
+    
+    # LogisticRegression, GaussianNB and LinearDiscriminantAnalysis are hard to be improved by only fine-tuning the initial parameters. Thus these 3 models are not prefered.
+    Classifier_LogisticRegression = LogisticRegression(solver='saga',multi_class='multinomial',max_iter=10000)
     Classifier_GausNB = GaussianNB()
     Classifier_LDAnalysis = LinearDiscriminantAnalysis()
 
