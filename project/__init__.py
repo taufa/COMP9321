@@ -18,6 +18,7 @@ app.config.update(dict(
 	SECRET_KEY="ynots-secret-key",
 	WTF_CSRF_SECRET_KEY="ynots-csrf-secret-key",
 	WTF_CSRF_TIME_LIMIT=3600,
+	WTF_CSRF_ENABLED = False,
 	))
 
 db = SQLAlchemy(app)
@@ -26,8 +27,8 @@ migrate = Migrate(app, db)
 from .models import HeartDisease, init_db
 from .prediction.FeatureImportance import feature_chi2
 from .visualization.views import display
-init_db()
-feature_chi2()
-display()
+#init_db()
+#feature_chi2()
+#display()
 
 from .views import *
