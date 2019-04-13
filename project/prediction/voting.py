@@ -30,12 +30,6 @@ prediction_LogisticRegression = Predict_using_LogisticRegression(m_age, m_sex, m
                         m_serum_cholestoral, m_fasting_blood_sugar, m_resting_electrocardiographic_results,
                         m_maximum_heart_rate_achieved, m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
                         m_number_of_major_vessels)
-if result == 0 or result == 3:
-  flash("Normal")
-if result == 1 or result == 6:
-  flash("Fixed Defect")
-if result == 2 or result == 7:
-  flash("Reversable Defect")
 
 voting[int(prediction_NN)] += 2
 voting[int(prediction_DecisionTree)] += 1.5

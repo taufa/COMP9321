@@ -8,6 +8,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sqlalchemy.orm import sessionmaker
+from project import db
+from project.models import HeartDisease
 
 # Declaration of classifiers as global variables
 Classifier_SVC = None
@@ -30,7 +32,7 @@ def load_data():
 # Init_and_Train() will load the training data, initialise each modals and train each models
 # Init_and_Train() should be called once and only once before we can use any functions below for
 #   prediction purpose.
-def Init_and_Train(training_data_fullpath):
+def Init_and_Train():
     # Clean the Dataframe df. Drop any row which contains a NaN in any field
     df1 = load_data()
     df1.dropna(how='any', inplace=True)
@@ -39,7 +41,7 @@ def Init_and_Train(training_data_fullpath):
     X0 = df1.drop('thal', axis=1)
 
     # Drop the 'target' column, as we are not allowed to use it according to the red notet, track 1 of the Assn3 specification.
-    X1 = X0.drop('target', axis=1)
+    X1 = X0.drop('num', axis=1)
 
     y = df1['thal']
 
@@ -87,10 +89,16 @@ def Predict_using_SVC(m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure,
                       m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
                       m_number_of_major_vessels)
     m_Pred_Result = Classifier_SVC.predict( ( m_Single_Input_Row, ) )
-    return m_Pred_Result[0]
 
-
-
+    result = int(float(m_Pred_Result[0]))
+    prediction_result = 0
+    if result == 3:
+      prediction_result = 0
+    if result == 6:
+      prediction_result = 1
+    if result == 7:
+      prediction_result = 2
+    return prediction_result
 
 def Predict_using_kNN(m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m_serum_cholestoral,
                       m_fasting_blood_sugar, m_resting_electrocardiographic_results, m_maximum_heart_rate_achieved,
@@ -103,10 +111,15 @@ def Predict_using_kNN(m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure,
                       m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
                       m_number_of_major_vessels)
     m_Pred_Result = Classifier_kNN.predict( ( m_Single_Input_Row, ) )
-    return m_Pred_Result[0]
-
-
-
+    result = int(float(m_Pred_Result[0]))
+    prediction_result = 0
+    if result == 3:
+      prediction_result = 0
+    if result == 6:
+      prediction_result = 1
+    if result == 7:
+      prediction_result = 2
+    return prediction_result
 
 def Predict_using_DecisionTree(m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m_serum_cholestoral,
                       m_fasting_blood_sugar, m_resting_electrocardiographic_results, m_maximum_heart_rate_achieved,
@@ -119,10 +132,15 @@ def Predict_using_DecisionTree(m_age, m_sex, m_chest_pain_type, m_resting_blood_
                       m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
                       m_number_of_major_vessels)
     m_Pred_Result = Classifier_DecisionTree.predict( ( m_Single_Input_Row, ) )
-    return m_Pred_Result[0]
-
-
-
+    result = int(float(m_Pred_Result[0]))
+    prediction_result = 0
+    if result == 3:
+      prediction_result = 0
+    if result == 6:
+      prediction_result = 1
+    if result == 7:
+      prediction_result = 2
+    return prediction_result
 
 def Predict_using_LogisticRegression(m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m_serum_cholestoral,
                       m_fasting_blood_sugar, m_resting_electrocardiographic_results, m_maximum_heart_rate_achieved,
@@ -135,10 +153,15 @@ def Predict_using_LogisticRegression(m_age, m_sex, m_chest_pain_type, m_resting_
                       m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
                       m_number_of_major_vessels)
     m_Pred_Result = Classifier_LogisticRegression.predict( ( m_Single_Input_Row, ) )
-    return m_Pred_Result[0]
-
-
-
+    result = int(float(m_Pred_Result[0]))
+    prediction_result = 0
+    if result == 3:
+      prediction_result = 0
+    if result == 6:
+      prediction_result = 1
+    if result == 7:
+      prediction_result = 2
+    return prediction_result
 
 def Predict_using_GausNB(m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m_serum_cholestoral,
                       m_fasting_blood_sugar, m_resting_electrocardiographic_results, m_maximum_heart_rate_achieved,
@@ -151,10 +174,15 @@ def Predict_using_GausNB(m_age, m_sex, m_chest_pain_type, m_resting_blood_pressu
                       m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
                       m_number_of_major_vessels)
     m_Pred_Result = Classifier_GausNB.predict( ( m_Single_Input_Row, ) )
-    return m_Pred_Result[0]
-
-
-
+    result = int(float(m_Pred_Result[0]))
+    prediction_result = 0
+    if result == 3:
+      prediction_result = 0
+    if result == 6:
+      prediction_result = 1
+    if result == 7:
+      prediction_result = 2
+    return prediction_result
 
 def Predict_using_LDAnalysis(m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m_serum_cholestoral,
                       m_fasting_blood_sugar, m_resting_electrocardiographic_results, m_maximum_heart_rate_achieved,
@@ -167,14 +195,19 @@ def Predict_using_LDAnalysis(m_age, m_sex, m_chest_pain_type, m_resting_blood_pr
                       m_exercise_induced_angina, m_oldpeak, m_slope_peak_exercise_ST_segment,
                       m_number_of_major_vessels)
     m_Pred_Result = Classifier_LDAnalysis.predict( ( m_Single_Input_Row, ) )
-    return m_Pred_Result[0]
-
-
-
+    result = int(float(m_Pred_Result[0]))
+    prediction_result = 0
+    if result == 3:
+      prediction_result = 0
+    if result == 6:
+      prediction_result = 1
+    if result == 7:
+      prediction_result = 2
+    return prediction_result
 
 
 # -- main() --
-# Init_and_Train(training_data_fullpath)
+Init_and_Train()
 # ret = Predict_using_SVC(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
 # print(ret)
 # ret = Predict_using_kNN(42.0,1.0,4.0,136.0,315.0,0.0,0.0,125.0,1.0,1.9,2.0,0.0)
