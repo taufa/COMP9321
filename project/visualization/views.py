@@ -53,63 +53,71 @@ def label_data(data):
 
 def display():
 	data = load_data()
-	# # # print("Shape: ", data.shape)
-	# # # print("Data head(20): ", data.head(20))
-	# # # print("Description: ", data.describe())
-	# # # print("Thal class: ", data.groupby('thal').size())
+	# # print("Shape: ", data.shape)
+	# # print("Data head(20): ", data.head(20))
+	# # print("Description: ", data.describe())
+	# # print("Thal class: ", data.groupby('thal').size())
 
-	# # thalassemia on different gender
-	# stacked_bar_gender(data)
-	# stacked_bar_thal_gender_norm(data)
+	# thalassemia on different gender
+	stacked_bar_gender(data)
+	stacked_bar_thal_gender_norm(data)
 
-	# # thalassemia over age
-	# line_plot_age_gender(data)
-	# hist_age_thal(data)
+	# thalassemia over age
+	line_plot_age_gender(data)
+	hist_age_thal(data)
 
-	# # check pain 
-	# stacked_bar_cp_gender(data)
-	# line_plot_cp_age(data)
-	# bar_graph_cp(data)
-	# hist_age_cp(data)
+	# check pain 
+	stacked_bar_cp_gender(data)
+	line_plot_cp_age(data)
+	bar_graph_cp(data)
+	hist_age_cp(data)
 
-	# # fasting blood sugar
-	# stacked_bar_fbs_gender(data)
-	# line_plot_fbs_age(data)
-	# bar_graph_fbs(data)
-	# hist_age_fbs(data)
+	# fasting blood sugar
+	stacked_bar_fbs_gender(data)
+	line_plot_fbs_age(data)
+	bar_graph_fbs(data)
+	hist_age_fbs(data)
 
-	# # resting electrocardiographic results
-	# stacked_bar_restecg_gender(data)
-	# line_plot_restecg_age(data)
-	# bar_graph_restecg(data)
-	# hist_age_restecg(data)
+	# resting electrocardiographic results
+	stacked_bar_restecg_gender(data)
+	line_plot_restecg_age(data)
+	bar_graph_restecg(data)
+	hist_age_restecg(data)
 
-	# # exercise induced angina
-	# stacked_bar_exang_gender(data)
-	# line_plot_exang_age(data)
-	# bar_graph_exang(data)
-	# hist_age_exang(data)
+	# exercise induced angina
+	stacked_bar_exang_gender(data)
+	line_plot_exang_age(data)
+	bar_graph_exang(data)
+	hist_age_exang(data)
 
-	# # exercise induced angina
-	# stacked_bar_slope_gender(data)
-	# line_plot_slope_age(data)
-	# bar_graph_slope(data)
-	# hist_age_slope(data)
+	# exercise induced angina
+	stacked_bar_slope_gender(data)
+	line_plot_slope_age(data)
+	bar_graph_slope(data)
+	hist_age_slope(data)
 
 	# # scatter matrix on continuous feature values
 	# features_scatter_matrix(data)
 
-	# resting blood pressure
-
 	# serum cholestoral
+	scatter_age_chol(data)
+	chol_gender_thal_plot(data)
 
 	# maximum heart rate achieved
-	hist_age_maxhr(data)
+	scatter_age_maxhr(data)
+	maxhr_gender_thal_plot(data)
+
+	# resting blood pressure
+	scatter_age_restbp(data)
+	restbp_gender_thal_plot(data)
 
 	# ST depression induced by exercise relative to rest
+	scatter_age_oldpeak(data)
+	oldpeak_gender_thal_plot(data)
 
 	# number of major vessels (0-3) colored by flourosopy
-
+	scatter_age_ca(data)
+	ca_gender_thal_plot(data)
 '''
 save figure to static folder
 '''
@@ -128,43 +136,6 @@ def hist_age_thal(data):
 	sb.set_xlabel("Age")
 	sb.set_ylabel("Thalassemia Count")
 	save_figure('hist_age_thal')
-	#plt.show()
-
-def line_plot_age_gender(data):
-	df = data[['age', 'thal']]
-	df.groupby('thal').age.plot(
-		kind='kde', legend=True, title="Thalassemia density by Age")
-	save_figure('line_plot_age_gender')
-	#plt.show()
-
-def stacked_bar_gender(data):
-	df = data.groupby(['thal', 'gender'])['thal'].count().unstack('gender').fillna(0)
-	sb = df[['female','male']].plot(kind='bar', stacked=True, rot=0, title="Gender count by Thalassemia type")
-	sb.set_xlabel("Thalassemia")
-	sb.set_ylabel("Count")
-	save_figure('stacked_bar_gender')
-	#plt.show()
-
-def stacked_bar_thal_gender_norm(data):
-	sb = data.groupby(['gender','thal']).size().groupby(level=0).apply(
-		lambda x: 100 * x / x.sum()).unstack().plot(kind='bar',stacked=True, rot=0, title="Gender on Thalassemia types (normalized)")
-	sb.set_xlabel("Gender")
-	sb.set_ylabel("Percentage")
-	plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter())
-	save_figure('stacked_bar_thal_gender_norm')
-	#plt.show()
-
-'''
-maximum heart rate
-'''
-def hist_age_maxhr(data):
-	df = data[['age', 'maximum_heart_rate_achieved']]
-	df = data.groupby([pd.cut(df.age, [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]), 'maximum_heart_rate_achieved'])
-	print(df)
-	#sb = df[['fixed defect', 'normal', 'reversable defect']].plot(kind='bar', stacked=True, rot=0, title="Thalassemia type count over Age")
-	#sb.set_xlabel("Age")
-	#sb.set_ylabel("Thalassemia Count")
-	#save_figure('hist_age_thal')
 	#plt.show()
 
 def line_plot_age_gender(data):
@@ -228,6 +199,31 @@ def bar_graph_cp(data):
 	#plt.show()
 
 '''
+maximum heart rate
+'''
+def scatter_age_maxhr(data):
+	df = data[['age', 'maximum_heart_rate_achieved']]
+	sp = df.plot.scatter(x='age', y='maximum_heart_rate_achieved');
+	sp.set_title("Heart rate over Age")
+	save_figure('scatter_age_maxhr')
+	#plt.show()
+
+def maxhr_gender_thal_plot(data):
+	df = data[['thal', 'gender', 'maximum_heart_rate_achieved']]
+	df['female'] = df.loc[df['gender'] == 'female', 'maximum_heart_rate_achieved']
+	df['male'] = df.loc[df['gender'] == 'male', 'maximum_heart_rate_achieved']
+
+	means = df.groupby(['thal']).mean().fillna(0)
+	errors = df.groupby(['thal']).std().fillna(0)
+	means.drop(['maximum_heart_rate_achieved'], axis=1, inplace=True)
+	errors.drop(['maximum_heart_rate_achieved'], axis=1, inplace=True)
+	_, ax = plt.subplots()
+	plot = means.plot.bar(yerr=errors, ax=ax, rot=0, title="Heart rate for Gender and Thalassemia")
+	plot.set_xlabel("Thalassemia")
+	plot.set_ylabel("Heart rate")
+	save_figure('maxhr_gender_thal_plot')
+
+'''
 fasting blood sugar
 '''
 def stacked_bar_fbs_gender(data):
@@ -263,6 +259,31 @@ def bar_graph_fbs(data):
 	#plt.show()
 
 '''
+resting blood pressure
+'''
+def scatter_age_restbp(data):
+	df = data[['age', 'resting_blood_pressure']]
+	sp = df.plot.scatter(x='age', y='resting_blood_pressure');
+	sp.set_title("Resting blood pressure over Age")
+	save_figure('scatter_age_restbp')
+	#plt.show()
+
+def restbp_gender_thal_plot(data):
+	df = data[['thal', 'gender', 'resting_blood_pressure']]
+	df['female'] = df.loc[df['gender'] == 'female', 'resting_blood_pressure']
+	df['male'] = df.loc[df['gender'] == 'male', 'resting_blood_pressure']
+
+	means = df.groupby(['thal']).mean().fillna(0)
+	errors = df.groupby(['thal']).std().fillna(0)
+	means.drop(['resting_blood_pressure'], axis=1, inplace=True)
+	errors.drop(['resting_blood_pressure'], axis=1, inplace=True)
+	_, ax = plt.subplots()
+	plot = means.plot.bar(yerr=errors, ax=ax, rot=0, title="Resting blood pressure for Gender and Thalassemia")
+	plot.set_xlabel("Thalassemia")
+	plot.set_ylabel("Resting blood pressure")
+	save_figure('restbp_gender_thal_plot')
+
+'''
 resting electrocardiographic results
 '''
 def stacked_bar_restecg_gender(data):
@@ -296,6 +317,33 @@ def bar_graph_restecg(data):
 	sb.set_ylabel("Count")
 	save_figure('bar_graph_restecg')
 	#plt.show()
+
+
+'''
+serum cholestoral
+'''
+def scatter_age_chol(data):
+	df = data[['age', 'serum_cholestoral']]
+	sp = df.plot.scatter(x='age', y='serum_cholestoral');
+	sp.set_title("Serum cholestoral over Age")
+	save_figure('scatter_age_chol')
+	#plt.show()
+
+def chol_gender_thal_plot(data):
+	df = data[['thal', 'gender', 'serum_cholestoral']]
+	df['female'] = df.loc[df['gender'] == 'female', 'serum_cholestoral']
+	df['male'] = df.loc[df['gender'] == 'male', 'serum_cholestoral']
+
+	means = df.groupby(['thal']).mean().fillna(0)
+	errors = df.groupby(['thal']).std().fillna(0)
+	means.drop(['serum_cholestoral'], axis=1, inplace=True)
+	errors.drop(['serum_cholestoral'], axis=1, inplace=True)
+	_, ax = plt.subplots()
+	plot = means.plot.bar(yerr=errors, ax=ax, rot=0, title="Serum cholestoral for Gender and Thalassemia")
+	plot.set_xlabel("Thalassemia")
+	plot.set_ylabel("Serum cholestoral")
+	save_figure('chol_gender_thal_plot')
+
 
 '''
 exercise induced angina
@@ -333,6 +381,31 @@ def bar_graph_exang(data):
 	#plt.show()
 
 '''
+ST depression induced by exercise
+'''
+def scatter_age_oldpeak(data):
+	df = data[['age', 'oldpeak']]
+	sp = df.plot.scatter(x='age', y='oldpeak');
+	sp.set_title("ST depression over Age")
+	save_figure('scatter_age_oldpeak')
+	#plt.show()
+
+def oldpeak_gender_thal_plot(data):
+	df = data[['thal', 'gender', 'oldpeak']]
+	df['female'] = df.loc[df['gender'] == 'female', 'oldpeak']
+	df['male'] = df.loc[df['gender'] == 'male', 'oldpeak']
+
+	means = df.groupby(['thal']).mean().fillna(0)
+	errors = df.groupby(['thal']).std().fillna(0)
+	means.drop(['oldpeak'], axis=1, inplace=True)
+	errors.drop(['oldpeak'], axis=1, inplace=True)
+	_, ax = plt.subplots()
+	plot = means.plot.bar(yerr=errors, ax=ax, rot=0, title="ST depression for Gender and Thalassemia")
+	plot.set_xlabel("Thalassemia")
+	plot.set_ylabel("ST depression")
+	save_figure('oldpeak_gender_thal_plot')
+
+'''
 slope
 '''
 def stacked_bar_slope_gender(data):
@@ -367,6 +440,34 @@ def bar_graph_slope(data):
 	save_figure('bar_graph_slope')
 	#plt.show()
 
+'''
+number of major vessels (0-3) colored by flourosopy
+'''
+def scatter_age_ca(data):
+	df = data[['age', 'number_of_major_vessels']]
+	sp = df.plot.scatter(x='age', y='number_of_major_vessels');
+	sp.set_title("number of major vessels over Age")
+	save_figure('scatter_age_ca')
+	#plt.show()
+
+def ca_gender_thal_plot(data):
+	df = data[['thal', 'gender', 'number_of_major_vessels']]
+	df['female'] = df.loc[df['gender'] == 'female', 'number_of_major_vessels']
+	df['male'] = df.loc[df['gender'] == 'male', 'number_of_major_vessels']
+
+	means = df.groupby(['thal']).mean().fillna(0)
+	errors = df.groupby(['thal']).std().fillna(0)
+	means.drop(['number_of_major_vessels'], axis=1, inplace=True)
+	errors.drop(['number_of_major_vessels'], axis=1, inplace=True)
+	_, ax = plt.subplots()
+	plot = means.plot.bar(yerr=errors, ax=ax, rot=0, title="Number of major vessels for Gender and Thalassemia")
+	plot.set_xlabel("Thalassemia")
+	plot.set_ylabel("Number of major vessels")
+	save_figure('ca_gender_thal_plot')
+
+'''
+features scatter matrix
+'''
 def features_scatter_matrix(data):
 	label = ['age', 
 		'gender', 

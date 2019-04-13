@@ -9,6 +9,7 @@ from collections import Counter
 def home():
 	form = PredictionForm()
 	submission_successful = True
+	predictions = nn_label = svm_label = knn_label = dt_label = lr_label = ''
 	if request.method == 'POST':
 
 		voting = {0: 0, 1: 0, 2: 0}
@@ -45,11 +46,20 @@ def home():
 		final_prediction, votes = sorted(voting.items(), key = lambda x: x[1], reverse = True)[0]
 		print(final_prediction, votes)
 
+		if 0 in (nn_result, svm_result, knn_result, dt_result, lr_result):
+			nn_label = svm_label = knn_label = dt_label = lr_label = 'Normal'
+		if 1 in (nn_result, svm_result, knn_result, dt_result, lr_result):
+			nn_label = svm_label = knn_label = dt_label = lr_label = 'Fixed Defect'
+		if 2 in (nn_result, svm_result, knn_result, dt_result, lr_result):
+			nn_label = svm_label = knn_label = dt_label = lr_label = 'Reversable Defect'
+	
+		predictions = f'Neural Network = {nn_label}, SVM = {svm_label}, k-NN = {knn_label}, Decision Tree = {dt_label}, Logistic Regression = {lr_label}'
+
 		if final_prediction == 0:
 			flash("Normal")
 		if final_prediction == 1:
 			flash("Fixed Defect")
 		if final_prediction == 2:
 			flash("Reversable Defect")
-		return redirect("http://127.0.0.1:5000/#predict")		
+		return redirect("http://127.0.0.1:5000/#predict")	
 	return render_template('home.html', form=form, submission_successful=submission_successful)
