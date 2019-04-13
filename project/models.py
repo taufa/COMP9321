@@ -38,5 +38,4 @@ def init_db(db_file='data/processed.cleveland.data'):
     data = pd.read_csv(db_file, header=None, float_precision='high')
     data.replace(['?'], [None], inplace=True)
     data.columns = ['age', 'sex', 'cp', 'restbps', 'chol', 'fbs', 'restecg', 'maxhr', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'num']
-    data.to_sql(HeartDisease.__table__.name, con=db.engine, if_
-        exists='replace', index=True, index_label='id')
+    data.to_sql(HeartDisease.__table__.name, con=db.engine, if_exists='replace', index=True, index_label='id')

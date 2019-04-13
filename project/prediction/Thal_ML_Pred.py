@@ -27,6 +27,7 @@ def load_data():
     session = Session()
     query = session.query(HeartDisease).all()
     data = pd.read_sql(session.query(HeartDisease).statement, session.bind, index_col='id')
+    session.close()
     return data
 
 # Init_and_Train() will load the training data, initialise each modals and train each models
