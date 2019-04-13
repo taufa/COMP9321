@@ -13,3 +13,30 @@
 
 <!-- Template Main Javascript File -->
 <script src="static/js/main.js"></script>
+
+<!-- script type=text/javascript>
+  $(document).ready(function(){
+    $('.form').on('click', '.get_result', function(){
+      var age: $('textarea[name="age"]').val();
+      var sex: $('#sex option:selected').val();
+      var cp: $('#cp option:selected').val();
+      var restbps: $('textarea[name="restbps"]').val();
+      var chol: $('textarea[name="chol"]').val();
+      var fbs: $('#fbs option:selected').val();
+      var restecg: $('#restecg option:selected').val();
+      var maxhr: $('textarea[name="maxhr"]').val();
+      var exang: $('#exang option:selected').val();
+      var oldpeak: $('textarea[name="oldpeak"]').val();
+      var slope: $('#slope option:selected').val();
+      var ca: $('#ca option:selected').val();
+      $.ajax({
+      url: "#predict",
+      type: "get",
+      data: {age: age, sex: sex, cp: cp, restbps: restbps, chol: chol, fbs: fbs, restecg: restecg, maxhr: maxhr, exang: exang, oldpeak: oldpeak, slope: slope, ca: ca},
+      success: function(response) {
+        $(".result").html('<p>'+response.result.toString()+'</p>');
+          },
+        });
+      });
+    });
+</script> -->

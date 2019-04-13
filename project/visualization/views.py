@@ -53,10 +53,10 @@ def label_data(data):
 
 def display():
 	data = load_data()
-	# print("Shape: ", data.shape)
-	# print("Data head(20): ", data.head(20))
-	# print("Description: ", data.describe())
-	# print("Thal class: ", data.groupby('thal').size())
+	# # print("Shape: ", data.shape)
+	# # print("Data head(20): ", data.head(20))
+	# # print("Description: ", data.describe())
+	# # print("Thal class: ", data.groupby('thal').size())
 
 	# thalassemia on different gender
 	stacked_bar_gender(data)
@@ -64,39 +64,50 @@ def display():
 
 	# thalassemia over age
 	line_plot_age_gender(data)
-
+	hist_age_thal(data)
 	# check pain 
 	stacked_bar_cp_gender(data)
 	line_plot_cp_age(data)
 	bar_graph_cp(data)
 
 	# fasting blood sugar
-	stacked_bar_fbs_gender_normalized(data)
+	stacked_bar_fbs_gender(data)
 	line_plot_fbs_age(data)
 	bar_graph_fbs(data)
 
 	# resting electrocardiographic results
-	stacked_bar_restecg_gender_normalized(data)
+	stacked_bar_restecg_gender(data)
 	line_plot_restecg_age(data)
 	bar_graph_restecg(data)
 
 	# exercise induced angina
-	stacked_bar_exang_gender_normalized(data)
+	stacked_bar_exang_gender(data)
 	line_plot_exang_age(data)
 	bar_graph_exang(data)
 
 	# exercise induced angina
-	stacked_bar_slope_gender_normalized(data)
+	stacked_bar_slope_gender(data)
 	line_plot_slope_age(data)
 	bar_graph_slope(data)
 
 	# scatter matrix on continuous feature values
 	features_scatter_matrix(data)
 
+
+
 def save_figure(filename):
 	dir_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'static'))
 	plt.savefig(f'{dir_path}\\img\\{filename}.png', bbox_inches='tight')
 	plt.clf()
+
+def hist_age_thal(data):
+	df = data[['age', 'thal']]
+	df = data.groupby([pd.cut(df.age, [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]), 'thal'])['age'].count().unstack('thal').fillna(0)
+	sb = df[['fixed defect', 'normal', 'reversable defect']].plot(kind='bar', stacked=True, rot=0, title="Thalassemia type count over Age")
+	sb.set_xlabel("Age")
+	sb.set_ylabel("Thalassemia Count")
+	save_figure('hist_age_thal')
+	#plt.show()
 
 def line_plot_age_gender(data):
 	df = data[['age', 'thal']]
@@ -153,13 +164,13 @@ def bar_graph_cp(data):
 '''
 fasting blood sugar
 '''
-def stacked_bar_fbs_gender_normalized(data):
+def stacked_bar_fbs_gender(data):
 	sbn = data.groupby(['gender','fasting_blood_sugar']).size().groupby(level=0).apply(
 		lambda x: 100 * x / x.sum()).unstack().plot(kind='bar',stacked=True, rot=0, title="Fasting blood sugar type on Gender (Normalized)")
 	sbn.set_xlabel("Gender")
 	sbn.set_ylabel("Percentage")
 	plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter())
-	save_figure('stacked_bar_fbs_gender_normalized')
+	save_figure('stacked_bar_fbs_gender')
 	#plt.show()
 
 def line_plot_fbs_age(data):
@@ -180,13 +191,13 @@ def bar_graph_fbs(data):
 '''
 resting electrocardiographic results
 '''
-def stacked_bar_restecg_gender_normalized(data):
+def stacked_bar_restecg_gender(data):
 	sbn = data.groupby(['gender','resting_electrocardiographic_results']).size().groupby(level=0).apply(
 		lambda x: 100 * x / x.sum()).unstack().plot(kind='bar',stacked=True, rot=0, title="Resting electrocardiographic on Gender (Normalized)")
 	sbn.set_xlabel("Gender")
 	sbn.set_ylabel("Percentage")
 	plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter())
-	save_figure('stacked_bar_restecg_gender_normalized')
+	save_figure('stacked_bar_restecg_gender')
 	#plt.show()
 
 def line_plot_restecg_age(data):
@@ -207,13 +218,13 @@ def bar_graph_restecg(data):
 '''
 exercise induced angina
 '''
-def stacked_bar_exang_gender_normalized(data):
+def stacked_bar_exang_gender(data):
 	sbn = data.groupby(['gender','exercise_induced_angina']).size().groupby(level=0).apply(
 		lambda x: 100 * x / x.sum()).unstack().plot(kind='bar',stacked=True, rot=0, title="Exercise induced angina on Gender (Normalized)")
 	sbn.set_xlabel("Gender")
 	sbn.set_ylabel("Percentage")
 	plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter())
-	save_figure('stacked_bar_exang_gender_normalized')
+	save_figure('stacked_bar_exang_gender')
 	#plt.show()
 
 def line_plot_exang_age(data):
@@ -234,13 +245,13 @@ def bar_graph_exang(data):
 '''
 slope
 '''
-def stacked_bar_slope_gender_normalized(data):
+def stacked_bar_slope_gender(data):
 	sbn = data.groupby(['gender','slope_peak_exercise_ST_segment']).size().groupby(level=0).apply(
 		lambda x: 100 * x / x.sum()).unstack().plot(kind='bar',stacked=True, rot=0, title="The slope of the peak exercise ST segment on Gender (Normalized)")
 	sbn.set_xlabel("Gender")
 	sbn.set_ylabel("Percentage")
 	plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter())
-	save_figure('stacked_bar_slope_gender_normalized')
+	save_figure('stacked_bar_slope_gender')
 	#plt.show()
 
 def line_plot_slope_age(data):

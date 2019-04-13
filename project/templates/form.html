@@ -1,4 +1,4 @@
-<form action="/" method="POST" role="form" class="form">
+<form action="" method="POST" role="form" class="form">
   {{ form.csrf_token }}
   <div class="form-group row">
     {{ form.age.label(class="col-sm-6 col-form-label") }}
@@ -72,5 +72,7 @@
     {{ form.ca(class="form-control") }}
     </div>
   </div>
-  {{ form.submit(class_="btn btn-success btn-block")}} 
+  <div class="form-group row">
+    {{ form.submit(class_="btn btn-success btn-block", id='form-submit') }}
+  </div>
 </form>

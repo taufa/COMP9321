@@ -1,14 +1,26 @@
 
 <section id="predict" class="section-bg">
   <div class="container">
+    <br><br>
     <header class="section-header">
       <h3>Prediction</h3>
     </header>
+    {% if submission_successful %}
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <header class="section-header">
+              <h3 style="color:blue;">{{ message }}</h3>
+              <p>Your result shows that ...</p>
+            </header>       
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    {% endif %}
     <div class="form">
       <div class="col-lg-8">
         {% include 'form.html' %}
-      </div>
-      <div class="col-lg-4"></div>
+      </div>      
     </div>
   </div>
 </section>

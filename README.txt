@@ -28,12 +28,13 @@ Design considerations:
 		Model description
 
 	- Neural Network:
-		The model selected consists of 3 hidden layers and 24 hidden nodes per layer. The model was trained using the following parameters / functions
+		The model selected consists of 4 hidden layers and 6 hidden nodes per layer. The model was trained using the following parameters / functions
 		- Loss function: Cross Entropy Loss
 		- Optimizer: Adam
-		- Learning rate:
-		- Weight Decay
-		- Mini-batch size
+		- Learning rate: 0.01
+		- Weight Decay: 0
+		- Mini-batch size: 16
+		- Training epochs: 78
 
 	The results (predictions) for each individual algorithm are tallied and the final prediction is the class with the most votes.
 

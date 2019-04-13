@@ -28,7 +28,7 @@ $ flask run
 ```
 ## Contributing
 
-Rafael Barreto Sotomayor   
+Rafael Barreto Sotomayor z5192279    
 Thanh Tuan Do   
 Tianyang Qiao   
 Semisi Taufa
