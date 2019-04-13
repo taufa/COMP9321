@@ -289,7 +289,7 @@ def predict_thal_nn(m_age, m_sex, m_chest_pain_type, m_resting_blood_pressure, m
     #                   m_number_of_major_vessels]
 
     filename = os.path.join(os.path.dirname(__file__), 'trained_net_14303.tar')
-    print('filename = ', filename)
+
     # Loading the model from file
     model = torch.load(filename)
     myNet = model['model']
