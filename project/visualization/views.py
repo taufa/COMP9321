@@ -53,53 +53,74 @@ def label_data(data):
 
 def display():
 	data = load_data()
-	# # print("Shape: ", data.shape)
-	# # print("Data head(20): ", data.head(20))
-	# # print("Description: ", data.describe())
-	# # print("Thal class: ", data.groupby('thal').size())
+	# # # print("Shape: ", data.shape)
+	# # # print("Data head(20): ", data.head(20))
+	# # # print("Description: ", data.describe())
+	# # # print("Thal class: ", data.groupby('thal').size())
 
-	# thalassemia on different gender
-	stacked_bar_gender(data)
-	stacked_bar_thal_gender_norm(data)
+	# # thalassemia on different gender
+	# stacked_bar_gender(data)
+	# stacked_bar_thal_gender_norm(data)
 
-	# thalassemia over age
-	line_plot_age_gender(data)
-	hist_age_thal(data)
-	# check pain 
-	stacked_bar_cp_gender(data)
-	line_plot_cp_age(data)
-	bar_graph_cp(data)
+	# # thalassemia over age
+	# line_plot_age_gender(data)
+	# hist_age_thal(data)
 
-	# fasting blood sugar
-	stacked_bar_fbs_gender(data)
-	line_plot_fbs_age(data)
-	bar_graph_fbs(data)
+	# # check pain 
+	# stacked_bar_cp_gender(data)
+	# line_plot_cp_age(data)
+	# bar_graph_cp(data)
+	# hist_age_cp(data)
 
-	# resting electrocardiographic results
-	stacked_bar_restecg_gender(data)
-	line_plot_restecg_age(data)
-	bar_graph_restecg(data)
+	# # fasting blood sugar
+	# stacked_bar_fbs_gender(data)
+	# line_plot_fbs_age(data)
+	# bar_graph_fbs(data)
+	# hist_age_fbs(data)
 
-	# exercise induced angina
-	stacked_bar_exang_gender(data)
-	line_plot_exang_age(data)
-	bar_graph_exang(data)
+	# # resting electrocardiographic results
+	# stacked_bar_restecg_gender(data)
+	# line_plot_restecg_age(data)
+	# bar_graph_restecg(data)
+	# hist_age_restecg(data)
 
-	# exercise induced angina
-	stacked_bar_slope_gender(data)
-	line_plot_slope_age(data)
-	bar_graph_slope(data)
+	# # exercise induced angina
+	# stacked_bar_exang_gender(data)
+	# line_plot_exang_age(data)
+	# bar_graph_exang(data)
+	# hist_age_exang(data)
 
-	# scatter matrix on continuous feature values
-	features_scatter_matrix(data)
+	# # exercise induced angina
+	# stacked_bar_slope_gender(data)
+	# line_plot_slope_age(data)
+	# bar_graph_slope(data)
+	# hist_age_slope(data)
 
+	# # scatter matrix on continuous feature values
+	# features_scatter_matrix(data)
 
+	# resting blood pressure
 
+	# serum cholestoral
+
+	# maximum heart rate achieved
+	hist_age_maxhr(data)
+
+	# ST depression induced by exercise relative to rest
+
+	# number of major vessels (0-3) colored by flourosopy
+
+'''
+save figure to static folder
+'''
 def save_figure(filename):
 	dir_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'static'))
 	plt.savefig(f'{dir_path}\\img\\{filename}.png', bbox_inches='tight')
 	plt.clf()
 
+'''
+Age against gender
+'''
 def hist_age_thal(data):
 	df = data[['age', 'thal']]
 	df = data.groupby([pd.cut(df.age, [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]), 'thal'])['age'].count().unstack('thal').fillna(0)
@@ -107,6 +128,43 @@ def hist_age_thal(data):
 	sb.set_xlabel("Age")
 	sb.set_ylabel("Thalassemia Count")
 	save_figure('hist_age_thal')
+	#plt.show()
+
+def line_plot_age_gender(data):
+	df = data[['age', 'thal']]
+	df.groupby('thal').age.plot(
+		kind='kde', legend=True, title="Thalassemia density by Age")
+	save_figure('line_plot_age_gender')
+	#plt.show()
+
+def stacked_bar_gender(data):
+	df = data.groupby(['thal', 'gender'])['thal'].count().unstack('gender').fillna(0)
+	sb = df[['female','male']].plot(kind='bar', stacked=True, rot=0, title="Gender count by Thalassemia type")
+	sb.set_xlabel("Thalassemia")
+	sb.set_ylabel("Count")
+	save_figure('stacked_bar_gender')
+	#plt.show()
+
+def stacked_bar_thal_gender_norm(data):
+	sb = data.groupby(['gender','thal']).size().groupby(level=0).apply(
+		lambda x: 100 * x / x.sum()).unstack().plot(kind='bar',stacked=True, rot=0, title="Gender on Thalassemia types (normalized)")
+	sb.set_xlabel("Gender")
+	sb.set_ylabel("Percentage")
+	plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter())
+	save_figure('stacked_bar_thal_gender_norm')
+	#plt.show()
+
+'''
+maximum heart rate
+'''
+def hist_age_maxhr(data):
+	df = data[['age', 'maximum_heart_rate_achieved']]
+	df = data.groupby([pd.cut(df.age, [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]), 'maximum_heart_rate_achieved'])
+	print(df)
+	#sb = df[['fixed defect', 'normal', 'reversable defect']].plot(kind='bar', stacked=True, rot=0, title="Thalassemia type count over Age")
+	#sb.set_xlabel("Age")
+	#sb.set_ylabel("Thalassemia Count")
+	#save_figure('hist_age_thal')
 	#plt.show()
 
 def line_plot_age_gender(data):
@@ -145,6 +203,14 @@ def stacked_bar_cp_gender(data):
 	save_figure('stacked_bar_cp_gender')
 	#plt.show()
 
+def hist_age_cp(data):
+	df = data[['age', 'chest_pain_type']]
+	df = data.groupby([pd.cut(df.age, [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]), 'chest_pain_type'])['age'].count().unstack('chest_pain_type').fillna(0)
+	sb = df[['typical angina', 'atypical angina', 'non-anginal pain', 'asymptomatic']].plot(kind='bar', stacked=True, rot=0, title="Chest pain over Age")
+	sb.set_xlabel("Age")
+	sb.set_ylabel("Chest pain count")
+	save_figure('hist_age_cp')
+
 def line_plot_cp_age(data):
 	df = data[['age', 'chest_pain_type']]
 	df.groupby('chest_pain_type').age.plot(
@@ -173,6 +239,14 @@ def stacked_bar_fbs_gender(data):
 	save_figure('stacked_bar_fbs_gender')
 	#plt.show()
 
+def hist_age_fbs(data):
+	df = data[['age', 'fasting_blood_sugar']]
+	df = data.groupby([pd.cut(df.age, [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]), 'fasting_blood_sugar'])['age'].count().unstack('fasting_blood_sugar').fillna(0)
+	sb = df[['false', 'true']].plot(kind='bar', stacked=True, rot=0, title="Fasting blood sugar over Age")
+	sb.set_xlabel("Age")
+	sb.set_ylabel("Fasting blood sugar count")
+	save_figure('hist_age_fbs')
+
 def line_plot_fbs_age(data):
 	df = data[['age', 'fasting_blood_sugar']]
 	df.groupby('fasting_blood_sugar').age.plot(
@@ -199,6 +273,14 @@ def stacked_bar_restecg_gender(data):
 	plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter())
 	save_figure('stacked_bar_restecg_gender')
 	#plt.show()
+
+def hist_age_restecg(data):
+	df = data[['age', 'resting_electrocardiographic_results']]
+	df = data.groupby([pd.cut(df.age, [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]), 'resting_electrocardiographic_results'])['age'].count().unstack('resting_electrocardiographic_results').fillna(0)
+	sb = df[['normal', 'ST-T wave abnormality', 'showing probable']].plot(kind='bar', stacked=True, rot=0, title="Resting electrocardiographic over Age")
+	sb.set_xlabel("Age")
+	sb.set_ylabel("Resting electrocardiographic sugar count")
+	save_figure('hist_age_restecg')
 
 def line_plot_restecg_age(data):
 	df = data[['age', 'resting_electrocardiographic_results']]
@@ -227,6 +309,14 @@ def stacked_bar_exang_gender(data):
 	save_figure('stacked_bar_exang_gender')
 	#plt.show()
 
+def hist_age_exang(data):
+	df = data[['age', 'exercise_induced_angina']]
+	df = data.groupby([pd.cut(df.age, [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]), 'exercise_induced_angina'])['age'].count().unstack('exercise_induced_angina').fillna(0)
+	sb = df[['yes', 'no']].plot(kind='bar', stacked=True, rot=0, title="Exercise induced angina over Age")
+	sb.set_xlabel("Age")
+	sb.set_ylabel("Exercise induced angina count")
+	save_figure('hist_age_exang')
+
 def line_plot_exang_age(data):
 	df = data[['age', 'exercise_induced_angina']]
 	df.groupby('exercise_induced_angina').age.plot(
@@ -253,6 +343,14 @@ def stacked_bar_slope_gender(data):
 	plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter())
 	save_figure('stacked_bar_slope_gender')
 	#plt.show()
+
+def hist_age_slope(data):
+	df = data[['age', 'slope_peak_exercise_ST_segment']]
+	df = data.groupby([pd.cut(df.age, [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]), 'slope_peak_exercise_ST_segment'])['age'].count().unstack('slope_peak_exercise_ST_segment').fillna(0)
+	sb = df[['upsloping', 'flat', 'downsloping']].plot(kind='bar', stacked=True, rot=0, title="Slope peak exercise over Age")
+	sb.set_xlabel("Age")
+	sb.set_ylabel("Slope peak exercise count")
+	save_figure('hist_age_slope')
 
 def line_plot_slope_age(data):
 	df = data[['age', 'slope_peak_exercise_ST_segment']]
