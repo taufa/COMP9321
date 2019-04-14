@@ -31,4 +31,4 @@ $ flask run
 Rafael Barreto Sotomayor z5192279    
 Thanh Tuan Do   
 Tianyang Qiao   
-Semisi Taufa
+Semisi Taufa z5192989    
