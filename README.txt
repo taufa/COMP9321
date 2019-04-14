@@ -28,7 +28,11 @@ Design considerations:
 		Model description
 
 	- Logistic Regression:
-		Model description
+		Model description: The model was trained over all 12 features. Howerver, the feature 'slope_of_the_peak_exercise_ST_segment' can be excluded without any effect on prediction accurracy.
+		The model was trained using the following parameters:
+		- Optimization algorithm: solver=saga
+		- multi_class = multinomial
+		- max_iter = 10000
 
 	- Neural Network:
 		The model selected consists of 4 hidden layers and 6 hidden nodes per layer. The model was trained using the following parameters / functions
