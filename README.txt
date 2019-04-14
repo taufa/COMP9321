@@ -20,12 +20,21 @@ Design considerations:
 
 	- Decission Tree:
 		Model description: The model was trained over 12 features. Feature 13 "thal(Thalassemia)" was excluded because it was the feature we will predict. We also dropped the "14. target: have disease or not" from the training as required by the project specification.
+		The model was trained using the default parameters.
 
 	- Support Vector Machine:
 		Model description: The model was trained over 12 features. Feature 13 "thal(Thalassemia)" was excluded because it was the feature we will predict. We also dropped the "14. target: have disease or not" from the training as required by the project specification.
+		The model was trained using the following parameters:
+		- kernel='rbf'
+		- degree=5
+		- gamma='auto'
 
 	- K Nearest Neighbour:
 		Model description: The model was trained over 12 features. Feature 13 "thal(Thalassemia)" was excluded because it was the feature we will predict. We also dropped the "14. target: have disease or not" from the training as required by the project specification.
+		The model was trained using the following parameters:
+		- n_neighbors=7
+		- weights='distance'
+		With increased n_neighbors and weights using distance, kNN model achieved a much better testing results than using default parameters.
 
 	- Logistic Regression:
 		Model description: The model was trained over all 12 features. Howerver, the feature 'slope_of_the_peak_exercise_ST_segment' can be excluded without any effect on prediction accurracy.
