@@ -19,13 +19,13 @@ Design considerations:
 	Our designed classifier combines several base algorithms to produce one predictive model (ensemble). The algorithms used in our design are:
 
 	- Decission Tree:
-		Model description
+		Model description: The model was trained over 12 features. Feature 13 "thal(Thalassemia)" was excluded because it was the feature we will predict. We also dropped the "14. target: have disease or not" from the training as required by the project specification.
 
 	- Support Vector Machine:
-		Model description
+		Model description: The model was trained over 12 features. Feature 13 "thal(Thalassemia)" was excluded because it was the feature we will predict. We also dropped the "14. target: have disease or not" from the training as required by the project specification.
 
 	- K Nearest Neighbour:
-		Model description
+		Model description: The model was trained over 12 features. Feature 13 "thal(Thalassemia)" was excluded because it was the feature we will predict. We also dropped the "14. target: have disease or not" from the training as required by the project specification.
 
 	- Logistic Regression:
 		Model description: The model was trained over all 12 features. Howerver, the feature 'slope_of_the_peak_exercise_ST_segment' can be excluded without any effect on prediction accurracy.
